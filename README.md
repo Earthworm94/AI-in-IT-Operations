@@ -35,3 +35,18 @@ Examples:
 - Faster resolution times
 - Scalable support models
 - Innovation in IT service delivery
+
+```mermaid
+flowchart LR
+    A[User Ticket] --> B[AI Triage]
+    B --> C[Suggested Fix]
+
+    C --> D[Tier 1 Technician]
+    D -->|Approve| E[Resolution Applied]
+
+    B --> F[Knowledge Base]
+    F --> C
+
+    B --> G[Pattern Detection]
+    G --> H[Predictive Alerts]
+```
