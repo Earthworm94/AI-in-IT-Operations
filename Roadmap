@@ -1,0 +1,52 @@
+# Enterprise AI Governance & Data Security Framework
+### Senior Systems Administrator | Identity, Infrastructure, and Security
+
+## 📌 Overview
+This repository serves as a strategic framework for deploying **Enterprise Generative AI (M365 Copilot & Azure OpenAI)** within high-compliance environments, such as large-scale educational institutions and multi-site enterprises. 
+
+As an infrastructure specialist, I focus on the "Data Boundary"—ensuring that AI implementation follows **Zero Trust** principles. This framework leverages **Microsoft Purview**, **Entra ID**, and the **NIST AI Risk Management Framework (RMF)** to solve the "Over-Permissioning" challenge inherent in modern LLM rollouts.
+
+---
+
+## 🛠 Technical Pillars
+
+### 1. Identity-Centric Security (Entra ID)
+In the age of AI, identity is the ultimate perimeter. My methodology includes:
+* **Conditional Access for AI:** Deploying policies that restrict AI model access based on device compliance, geographic location, and user risk signaling.
+* **Role-Based Access Control (RBAC):** Aligning Entra ID groups with AI "grounding" data to ensure users only interact with information they are explicitly authorized to view.
+
+### 2. Data Governance & Information Protection (Microsoft Purview)
+The primary risk of AI is "Data Leakage" via discovery. This framework mitigates this through:
+* **Sensitivity Labeling:** Implementing automated labeling for PII, PHI, and Student Records that M365 Copilot respects.
+* **Label Inheritance:** Ensuring AI-generated summaries inherit the highest security classification of their source documents.
+* **DLP (Data Loss Prevention):** Architecting rules that prevent AI-generated sensitive data from leaving the managed tenant.
+
+### 3. Secure RAG (Retrieval-Augmented Generation)
+For custom AI builds (Azure AI Search + Azure OpenAI):
+* **User-Context Filtering:** Implementing logic where the vector database returns results filtered by the user's real-time permissions.
+* **Source Attribution:** Forcing "Grounding" to internal Technical SOPs and Runbooks to eliminate hallucinations in mission-critical IT environments.
+
+---
+
+## 📋 Governance Implementation Roadmap
+
+| Phase | Task | Objective |
+| :--- | :--- | :--- |
+| **Audit** | **Permission Discovery** | Use Microsoft Graph to identify over-shared SharePoint sites before enabling AI indexing. |
+| **Protect** | **Auto-Labeling** | Apply Purview policies to detect and protect sensitive assets (e.g., Student Info, Financials). |
+| **Govern** | **Usage Policies** | Define system prompts that prevent models from discussing non-authorized topics (e.g., HR or Payroll). |
+| **Monitor** | **AI Hub Analytics** | Monitor the Purview AI Hub to audit how sensitive data interacts with Large Language Models. |
+
+---
+
+## 🚀 Key Projects
+
+### [Project A: Secure IT Knowledge RAG Assistant]
+* **Scenario:** High-volume helpdesk and technical staff needing instant access to documentation.
+* **Action:** Built an Azure AI-indexed knowledge system utilizing legacy SOPs and Runbooks.
+* **Result:** Reduced "Information Discovery Time" by 40% while maintaining strict Entra ID group-based access to network configurations.
+
+### [Project B: AI Modernization & Change Management]
+* **Scenario:** Scaling AI adoption across 20+ sites and 2,000+ employees.
+* **Action:** Developed a "Human-in-the-Loop" validation workflow for AI-generated documentation, ensuring accuracy before publishing to the district knowledge base.
+
