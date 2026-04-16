@@ -1,0 +1,124 @@
+import asyncio
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama"
+)
+
+MODEL = "llama3"
+
+# -----------------------------
+# Agent definitions
+# -----------------------------
+
+AGENTS = {
+    "planner": "You design a clear structured solution.",
+    "architect": "You focus on system design, scalability, and structure.",
+    "security": "You analyze security risks, vulnerabilities, and mitigations.",
+    "critic": "You find flaws, missing pieces, and logic issues.",
+    "executor": "You convert designs into implementation steps."
+}
+
+
+def call_agent(role, system_prompt, context):
+    """Single agent call"""
+    resp = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": context}
+        ],
+        temperature=0.6
+    )
+    return resp.choices[0].message.content
+
+
+async def run_agent(role, system_prompt, context):
+    """Async wrapper"""
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, call_agent, role, system_prompt, context)
+
+
+# -----------------------------
+# Convergence logic
+# -----------------------------
+
+def check_convergence(outputs):
+    """
+    Simple heuristic:
+    stop if critic + security outputs are short and contain no major issues
+    """
+    security = outputs["security"].lower()
+    critic = outputs["critic"].lower()
+
+    bad_signals = ["issue", "problem", "risk", "vulnerability", "missing", "concern"]
+
+    score = sum(any(word in security for word in bad_signals)) + \
+            sum(any(word in critic for word in bad_signals))
+
+    return score == 0
+
+
+# -----------------------------
+# Main loop
+# -----------------------------
+
+async def main():
+    topic = "Design a modern IT helpdesk ticket system."
+
+    shared_state = topic
+    max_rounds = 5
+
+    for round_num in range(max_rounds):
+        print(f"\n\n================ ROUND {round_num + 1} ================\n")
+
+        # Run ALL agents concurrently
+        results = await asyncio.gather(
+            run_agent("planner", AGENTS["planner"], shared_state),
+            run_agent("architect", AGENTS["architect"], shared_state),
+            run_agent("security", AGENTS["security"], shared_state),
+            run_agent("critic", AGENTS["critic"], shared_state),
+            run_agent("executor", AGENTS["executor"], shared_state),
+        )
+
+        outputs = dict(zip(AGENTS.keys(), results))
+
+        # Print outputs
+        for k, v in outputs.items():
+            print(f"\n--- {k.upper()} ---\n{v}")
+
+        # Check convergence
+        if check_convergence(outputs):
+            print("\n\n✅ CONVERGENCE REACHED\n")
+            break
+
+        # Merge all feedback into next state
+        shared_state = f"""
+TOPIC:
+{topic}
+
+CURRENT SYSTEM STATE:
+{outputs['planner']}
+
+ARCHITECT FEEDBACK:
+{outputs['architect']}
+
+SECURITY REVIEW:
+{outputs['security']}
+
+CRITIC REVIEW:
+{outputs['critic']}
+
+EXECUTION PLAN:
+{outputs['executor']}
+
+TASK:
+Refine the system based on all feedback.
+"""
+
+    print("\n\n🏁 FINAL OUTPUT:\n", shared_state)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
